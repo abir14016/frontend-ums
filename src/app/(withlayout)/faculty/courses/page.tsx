@@ -9,6 +9,7 @@ import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 import { IOfferedCourseSchedule, IOfferedCourseSection } from "@/types";
 import { useFacultyCoursesQuery } from "@/redux/api/facultyApi";
+import Loading from "@/app/loading";
 
 const FacultyCoursesPage = () => {
   const query: Record<string, any> = {};
@@ -34,10 +35,12 @@ const FacultyCoursesPage = () => {
   }
   const { data, isLoading } = useFacultyCoursesQuery({ ...query });
 
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
   const myCourses = data?.myCourses;
   const meta = data?.meta;
-
-  // console.log(myCourses);
 
   const columns = [
     {

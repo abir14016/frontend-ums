@@ -9,6 +9,9 @@ import { Card, Col, Row, Tag } from "antd";
 const AcademicReport = () => {
   const query: Record<string, any> = {};
   const { data, isLoading } = useMyAcademicInfosQuery({ ...query });
+  if (!isLoading) {
+    console.log(data);
+  }
   const columns = [
     {
       title: "Grade Report",

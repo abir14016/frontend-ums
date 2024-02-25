@@ -1,7 +1,8 @@
 "use client";
 import ActionBar from "@/components/ui/ActionBar";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { Button, Input } from "antd";
+import { Button, Input, message, Typography } from "antd";
+const { Text } = Typography;
 import Link from "next/link";
 import {
   DeleteOutlined,
@@ -15,7 +16,12 @@ import UMTable from "@/components/ui/UMTable";
 import { IDepartment } from "@/types";
 import dayjs from "dayjs";
 import { useFacultiesQuery } from "@/redux/api/facultyApi";
-import { useStudentsQuery } from "@/redux/api/studentApi";
+import {
+  useDeleteStudentMutation,
+  useStudentQuery,
+  useStudentsQuery,
+} from "@/redux/api/studentApi";
+import UMModal from "@/components/ui/UMModal";
 
 const StudentPage = () => {
   const query: Record<string, any> = {};
@@ -25,6 +31,11 @@ const StudentPage = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [studentId, setStudentId] = useState<string>("");
+
+  const { data: studentData } = useStudentQuery(studentId);
 
   query["limit"] = size;
   query["page"] = page;
@@ -45,11 +56,26 @@ const StudentPage = () => {
   const meta = data?.meta;
   // console.log(students);
 
+  const [deleteStudent] = useDeleteStudentMutation();
+  const deleteStudentHandler = async (id: string) => {
+    message.loading("Deleting.....");
+    try {
+      await deleteStudent(id);
+      setOpen(false);
+      message.success("Student Deleted successfully");
+    } catch (err: any) {
+      message.error(err.message);
+    }
+  };
+
   const columns = [
     {
       title: "Id",
       dataIndex: "studentId",
       sorter: true,
+      render: function (data: any) {
+        return <Text mark>{data}</Text>;
+      },
     },
     {
       title: "Name",
@@ -85,12 +111,18 @@ const StudentPage = () => {
       render: function (data: any) {
         return (
           <>
-            <Link href={`/admin/manage-faculty/details/${data.id}`}>
-              <Button onClick={() => console.log(data)} type="primary">
+            <Link href={`/admin/manage-student/details/${data}`}>
+              <Button
+                onClick={() => console.log(data)}
+                style={{
+                  margin: "0px 5px",
+                }}
+                type="primary"
+              >
                 <EyeOutlined />
               </Button>
             </Link>
-            <Link href={`/admin/manage-faculty/edit/${data.id}`}>
+            <Link href={`/admin/manage-student/edit/${data}`}>
               <Button
                 style={{
                   margin: "0px 5px",
@@ -101,7 +133,15 @@ const StudentPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            <Button onClick={() => console.log(data)} type="primary" danger>
+            <Button
+              type="primary"
+              onClick={() => {
+                setOpen(true);
+                setStudentId(data);
+              }}
+              danger
+              style={{ marginLeft: "3px" }}
+            >
               <DeleteOutlined />
             </Button>
           </>
@@ -147,7 +187,7 @@ const StudentPage = () => {
         />
         <div>
           <Link href="/admin/manage-student/create">
-            <Button type="primary">Create</Button>
+            <Button type="primary">Create Student</Button>
           </Link>
           {(!!sortBy || !!sortOrder || !!searchTerm) && (
             <Button
@@ -162,6 +202,7 @@ const StudentPage = () => {
       </ActionBar>
 
       <UMTable
+        key={studentId}
         loading={isLoading}
         columns={columns}
         dataSource={students}
@@ -172,6 +213,17 @@ const StudentPage = () => {
         onTableChange={onTableChange}
         showPagination={true}
       />
+
+      <UMModal
+        title="Remove Admin"
+        isOpen={open}
+        closeModal={() => setOpen(false)}
+        handleOk={() => deleteStudentHandler(studentId)}
+      >
+        <p className="my-5">
+          Do you want to remove the admin with id: {studentData?.studentId}?
+        </p>
+      </UMModal>
     </div>
   );
 };

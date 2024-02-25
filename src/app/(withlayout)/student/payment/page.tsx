@@ -1,7 +1,8 @@
 "use client";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { Button, Input, Tag, Tooltip } from "antd";
+import { Button, Input, Tag, Tooltip, message, Typography } from "antd";
+const { Text } = Typography;
 import { ReloadOutlined } from "@ant-design/icons";
 import { useDebounced } from "@/redux/hooks";
 import { IAcademicCoreSemester, IOfferedCourse } from "@/types";
@@ -48,11 +49,16 @@ const ViewMyPayment = () => {
   const [initialPayment] = useInitialPaymentMutation();
 
   const handleInitialPayment = async (data: any) => {
-    // console.log(data);
     try {
       const res = await initialPayment(data).unwrap();
-      // console.log(res);
-      router.push(res?.paymentUrl);
+      console.log(res);
+      if (!res) {
+        message.error("payment initiation failed !");
+      } else {
+        message.success("payment initiated successfully !");
+        message.loading("redirecting to SSL COMMERZE payment URL");
+      }
+      router.push(res?.paymentUrl?.data);
     } catch (error) {}
   };
 
@@ -100,7 +106,9 @@ const ViewMyPayment = () => {
               </td>
               <td style={{ textAlign: "left", padding: "5px 15px" }}>
                 <span style={{ marginLeft: "10px", textAlign: "right" }}>
-                  {data?.studentId}
+                  <Text mark underline>
+                    {data?.studentId}
+                  </Text>
                 </span>
               </td>
             </tr>
@@ -361,7 +369,9 @@ const ViewMyPayment = () => {
         }}
       >
         <>
-          <p>Payment: {paymentType} </p>
+          <p>
+            Payment Type: <Text mark>{paymentType}</Text>{" "}
+          </p>
           <p className="my-5">Click ok button to proceed payment</p>
         </>
       </UMModal>

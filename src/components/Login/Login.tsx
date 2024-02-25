@@ -1,6 +1,6 @@
 "use client";
 import { Button, Col, Input, Row, message } from "antd";
-import loginImage from "../../assets/login-image.png";
+import loginImage from "../../assets/mobile-login-image.png";
 import Image from "next/image";
 import Form from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
@@ -26,15 +26,17 @@ const LoginPage = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
     try {
       const res = await userLogin({ ...data }).unwrap();
-      // console.log(res);
       if (res?.accessToken) {
         router.push("/profile");
         message.success("User logged in successfully!");
       }
+      if (!res) {
+        message.error("Incorrect user id or password");
+      }
       storeUserInfo({ accessToken: res?.accessToken });
       // console.log(res);
     } catch (err: any) {
-      console.error(err.message);
+      console.log(err.message);
     }
   };
 

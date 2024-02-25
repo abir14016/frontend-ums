@@ -35,7 +35,12 @@ const StudentRegistrationPage = () => {
           </Button>
         ) : (
           <>
-            <div>You are not allowed to do your registration. Stay tuned.</div>
+            <Alert
+              message="Warning"
+              description="You are not allowed to do your registration. Stay tuned."
+              type="warning"
+              showIcon
+            />
           </>
         )}
       </div>

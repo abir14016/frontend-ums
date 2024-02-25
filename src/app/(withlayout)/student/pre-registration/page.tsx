@@ -16,7 +16,7 @@ const ViewPreregistrationPage = () => {
   const [enrollIntoCourse] = useEnrollIntoCourseMutation();
   const [withdrawFromCourse] = useWithdrawFromCourseMutation();
   const [confirmMyRegistration] = useConfirmMyRegistrationMutation();
-  //   console.log(data, "offeredCourseSections");
+  console.log(data, "offeredCourseSections");
 
   const handleEnroll = async ({
     offeredCourseId,
@@ -28,6 +28,7 @@ const ViewPreregistrationPage = () => {
         offeredCourseSectionId,
       }).unwrap();
     } catch (err: any) {
+      console.log("Error caught:", err);
       message.error(err?.message);
     }
   };

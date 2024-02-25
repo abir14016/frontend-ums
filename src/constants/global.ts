@@ -7,10 +7,6 @@ export const genderOptions = [
     label: "Female",
     value: "female",
   },
-  {
-    label: "Others",
-    value: "others",
-  },
 ];
 export const departmentOptions = [
   {

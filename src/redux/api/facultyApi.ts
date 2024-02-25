@@ -23,10 +23,18 @@ export const facultyApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.faculty],
     }),
+    // get single faculty profile user endpoint
+    facultyProfile: build.query({
+      query: (id: string | string[] | undefined) => ({
+        url: `${BASE_FACULTY_API_URL}/profile/${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.faculty],
+    }),
     // get single faculty user endpoint
     faculty: build.query({
       query: (id: string | string[] | undefined) => ({
-        url: `${BASE_FACULTY_API_URL}/profile/${id}`,
+        url: `${BASE_FACULTY_API_URL}/${id}`,
         method: "GET",
       }),
       providesTags: [tagTypes.faculty],
@@ -98,6 +106,7 @@ export const facultyApi = baseApi.injectEndpoints({
 export const {
   useAddFacultyWithFormDataMutation, // create faculty user hook
   useFacultiesQuery, // get all faculty users hook
+  useFacultyProfileQuery, // get single faculty profile user hook
   useFacultyQuery, // get single faculty user hook
   useUpdateFacultyMutation, // update single faculty user hook
   useDeleteFacultyMutation, // delete single faculty user hook

@@ -28,13 +28,14 @@ const CreateACSemesterPage = () => {
   const [addAcademicSemester] = useAddAcademicSemesterMutation();
 
   const onSubmit = async (data: any) => {
+    console.log("ccccc");
     if (data?.title == "Autumn") data["code"] = "01";
     else if (data?.title == "Summer") data["code"] = "02";
     else data["code"] = "03";
 
     data.year = parseInt(data.year);
 
-    // console.log(data);
+    console.log(data);
 
     message.loading("Creating.....");
     try {

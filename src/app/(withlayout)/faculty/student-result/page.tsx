@@ -21,6 +21,7 @@ import {
   useUpdateFinalMarksMutation,
 } from "@/redux/api/studentEnrollCourseMarkApi";
 import { IStudentEnrolledCourseMark } from "@/types";
+import Loading from "@/app/loading";
 
 const StudentResultPage = ({ searchParams }: Record<string, any>) => {
   const [updateFinalMarks] = useUpdateFinalMarksMutation();
@@ -58,13 +59,17 @@ const StudentResultPage = ({ searchParams }: Record<string, any>) => {
 
   const { data, isLoading } = useStudentEnrolledCourseMarksQuery({ ...query });
 
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
   const studentEnrolledCourseMarks = data?.studentEnrolledCourseMarks;
+  console.log(studentEnrolledCourseMarks);
   const meta = data?.meta;
 
   // console.log(studentEnrolledCourseMarks);
 
   const handleUpdateFinalMarks = async (values: any) => {
-    // console.log(values);
     try {
       const res = await updateFinalMarks(values);
       if (res) {
@@ -97,8 +102,10 @@ const StudentResultPage = ({ searchParams }: Record<string, any>) => {
       render: function (data: any) {
         return (
           <table>
-            <BaseRow title="grade">{!data?.grade ? "-" : data?.grade}</BaseRow>
-            <BaseRow title="total marks">{data?.marks}</BaseRow>
+            <BaseRow title="grade">{!data?.grade ? "--" : data?.grade}</BaseRow>
+            <BaseRow title="total marks">
+              {!data?.marks ? "--" : data?.marks}
+            </BaseRow>
           </table>
         );
       },

@@ -8,9 +8,9 @@ import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 import { useFacultyCourseStudentsQuery } from "@/redux/api/facultyApi";
 import Link from "next/link";
+import Loading from "@/app/loading";
 
 const FacultyCoursesStudentsPage = ({ searchParams }: Record<string, any>) => {
-  //   console.log(searchParams);
   const { courseId, offeredCourseSectionId } = searchParams;
 
   const query: Record<string, any> = {};
@@ -43,6 +43,10 @@ const FacultyCoursesStudentsPage = ({ searchParams }: Record<string, any>) => {
   }
   const { data, isLoading } = useFacultyCourseStudentsQuery({ ...query });
 
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
   const myCourseStudents = data?.myCourseStudents;
   const meta = data?.meta;
 
@@ -52,11 +56,10 @@ const FacultyCoursesStudentsPage = ({ searchParams }: Record<string, any>) => {
     {
       title: "Student Name",
       render: function (data: any) {
+        console.log(data);
         return (
           <>
-            {data?.firstName}
-            {data?.middleName}
-            {data?.LastName}
+            {data?.firstName} {data?.middleName} {data?.lastName}
           </>
         );
       },

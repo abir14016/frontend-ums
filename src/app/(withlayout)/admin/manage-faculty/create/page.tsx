@@ -12,11 +12,17 @@ import UploadImage from "@/components/ui/UploadImage";
 import { bloodGroupOptions, genderOptions } from "@/constants/global";
 import { useAddFacultyWithFormDataMutation } from "@/redux/api/facultyApi";
 import { Button, Col, Row, message } from "antd";
+import { useState } from "react";
 
 const CreateFacultyPage = () => {
   const [addFacultyWithFormData] = useAddFacultyWithFormDataMutation();
 
+  const [acFacultyId, setAcFacultyId] = useState<string>();
+
+  console.log(acFacultyId);
+
   const adminOnSubmit = async (values: any) => {
+    console.log(values);
     const obj = { ...values };
     const file = obj["file"];
     delete obj["file"];
@@ -24,9 +30,11 @@ const CreateFacultyPage = () => {
     const formData = new FormData();
     formData.append("file", file as Blob);
     formData.append("data", data);
+    console.log(formData);
     message.loading("Creating...");
     try {
       const res = await addFacultyWithFormData(formData);
+      console.log(res);
       if (!!res) {
         message.success("Faculty created successfully!");
       }

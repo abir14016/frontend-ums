@@ -19,6 +19,7 @@ const UpdateMarksPage = ({ searchParams }: Record<string, any>) => {
   const [updateMarks] = useUpdateMarksMutation();
 
   const onSubmit = async (values: any) => {
+    console.log(values);
     values.marks = parseInt(values.marks);
     try {
       const res = await updateMarks(values).unwrap();

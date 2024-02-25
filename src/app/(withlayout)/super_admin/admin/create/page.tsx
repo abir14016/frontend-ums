@@ -8,6 +8,7 @@ import FormTextArea from "@/components/Forms/FormTextArea";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UploadImage from "@/components/ui/UploadImage";
 import { bloodGroupOptions, genderOptions } from "@/constants/global";
+import { getDefaultAdminPassword } from "@/helpers/config/envConfig";
 import { useAddAdminWithFormDataMutation } from "@/redux/api/adminApi";
 import { useDepartmentsQuery } from "@/redux/api/departmentApi";
 import { adminSchema } from "@/schemas/admin";
@@ -17,6 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Col, Row, message } from "antd";
 
 const CreateAdminPage = () => {
+  const defaultAdminPass = getDefaultAdminPassword();
   const { data, isLoading } = useDepartmentsQuery({ limit: 100, page: 1 });
   const [addAdminWithFormData] = useAddAdminWithFormDataMutation();
   //@ts-ignore
@@ -41,8 +43,13 @@ const CreateAdminPage = () => {
     formData.append("data", data);
     message.loading("Creating...");
     try {
-      await addAdminWithFormData(formData);
-      message.success("Admin created successfully!");
+      const res = await addAdminWithFormData(formData).unwrap();
+      if (!res) {
+        message.error("Failed to create admin!");
+      }
+      if (res) {
+        message.success("Admin created successfully!");
+      }
     } catch (err: any) {
       console.error(err.message);
     }
@@ -95,6 +102,7 @@ const CreateAdminPage = () => {
                   name="admin.name.firstName"
                   size="large"
                   label="First Name"
+                  required
                 />
               </Col>
               <Col
@@ -109,6 +117,7 @@ const CreateAdminPage = () => {
                   name="admin.name.middleName"
                   size="large"
                   label="Middle Name"
+                  required
                 />
               </Col>
               <Col
@@ -123,6 +132,7 @@ const CreateAdminPage = () => {
                   name="admin.name.lastName"
                   size="large"
                   label="Last Name"
+                  required
                 />
               </Col>
               <Col
@@ -133,6 +143,7 @@ const CreateAdminPage = () => {
                 }}
               >
                 <FormInput
+                  // defaultValue={defaultAdminPass}
                   type="password"
                   name="password"
                   size="large"
@@ -167,6 +178,7 @@ const CreateAdminPage = () => {
                   options={departmentOptions}
                   label="Department"
                   placeholder="Select"
+                  required
                 />
               </Col>
               <Col
@@ -211,6 +223,7 @@ const CreateAdminPage = () => {
                   name="admin.email"
                   size="large"
                   label="Email address"
+                  required
                 />
               </Col>
               <Col
@@ -225,6 +238,7 @@ const CreateAdminPage = () => {
                   name="admin.contactNo"
                   size="large"
                   label="Contact No."
+                  required
                 />
               </Col>
               <Col
@@ -239,6 +253,7 @@ const CreateAdminPage = () => {
                   name="admin.emergencyContactNo"
                   size="large"
                   label="Emergency Contact No."
+                  required
                 />
               </Col>
               <Col
@@ -281,6 +296,7 @@ const CreateAdminPage = () => {
                   name="admin.designation"
                   size="large"
                   label="Designation"
+                  required
                 />
               </Col>
               <Col span={12} style={{ margin: "10px 0" }}>
@@ -300,8 +316,8 @@ const CreateAdminPage = () => {
               </Col>
             </Row>
           </div>
-          <Button htmlType="submit" type="primary">
-            Create
+          <Button type="primary" htmlType="submit">
+            Create Admin
           </Button>
         </Form>
       </div>

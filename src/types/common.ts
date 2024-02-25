@@ -4,6 +4,18 @@ export interface IMeta {
   total: number;
 }
 
+export type IApiResponse<T> = {
+  statusCode: number;
+  success: boolean;
+  message?: string | null;
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  data?: T | null;
+};
+
 export type ResponseSuccessType = {
   data: any;
   meta?: IMeta;
@@ -32,6 +44,16 @@ export interface Name {
   firstName: string;
   lastName: string;
   middleName: string;
+}
+
+export interface IUser {
+  id: string;
+  role: string;
+  password: string;
+  needsPasswordChange?: boolean;
+  admin?: string;
+  faculty?: string;
+  student?: string;
 }
 
 export interface IAdmin {

@@ -1,7 +1,8 @@
 "use client";
 import ActionBar from "@/components/ui/ActionBar";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { Button, Input } from "antd";
+import { Button, Input, message, Typography } from "antd";
+const { Text } = Typography;
 import Link from "next/link";
 import {
   DeleteOutlined,
@@ -14,7 +15,12 @@ import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 import { IDepartment } from "@/types";
 import dayjs from "dayjs";
-import { useFacultiesQuery } from "@/redux/api/facultyApi";
+import {
+  useDeleteFacultyMutation,
+  useFacultiesQuery,
+  useFacultyQuery,
+} from "@/redux/api/facultyApi";
+import UMModal from "@/components/ui/UMModal";
 
 const FacultyPage = () => {
   const query: Record<string, any> = {};
@@ -24,6 +30,11 @@ const FacultyPage = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [facultyId, setFacultyId] = useState<string>("");
+
+  const { data: facultyData } = useFacultyQuery(facultyId);
 
   query["limit"] = size;
   query["page"] = page;
@@ -42,13 +53,27 @@ const FacultyPage = () => {
 
   const faculties = data?.faculties;
   const meta = data?.meta;
-  console.log(faculties);
+
+  const [deleteFaculty] = useDeleteFacultyMutation();
+  const deleteFacultyHandler = async (id: string) => {
+    message.loading("Deleting.....");
+    try {
+      await deleteFaculty(id);
+      setOpen(false);
+      message.success("Faculty Deleted successfully");
+    } catch (err: any) {
+      message.error(err.message);
+    }
+  };
 
   const columns = [
     {
       title: "Id",
       dataIndex: "facultyId",
       sorter: true,
+      render: function (data: any) {
+        return <Text mark>{data}</Text>;
+      },
     },
     {
       title: "Name",
@@ -90,8 +115,14 @@ const FacultyPage = () => {
       render: function (data: any) {
         return (
           <>
-            <Link href={`/admin/manage-faculty/details/${data.id}`}>
-              <Button onClick={() => console.log(data)} type="primary">
+            <Link href={`/admin/manage-faculty/details/${data}`}>
+              <Button
+                onClick={() => console.log(data)}
+                style={{
+                  margin: "0px 5px",
+                }}
+                type="primary"
+              >
                 <EyeOutlined />
               </Button>
             </Link>
@@ -106,7 +137,14 @@ const FacultyPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            <Button onClick={() => console.log(data)} type="primary" danger>
+            <Button
+              onClick={() => {
+                setOpen(true);
+                setFacultyId(data);
+              }}
+              type="primary"
+              danger
+            >
               <DeleteOutlined />
             </Button>
           </>
@@ -177,6 +215,17 @@ const FacultyPage = () => {
         onTableChange={onTableChange}
         showPagination={true}
       />
+
+      <UMModal
+        title="Remove Faculty"
+        isOpen={open}
+        closeModal={() => setOpen(false)}
+        handleOk={() => deleteFacultyHandler(facultyId)}
+      >
+        <p className="my-5">
+          Do you want to remove the admin with id: {facultyData?.facultyId}?
+        </p>
+      </UMModal>
     </div>
   );
 };

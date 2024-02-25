@@ -4,9 +4,10 @@ import FormSelectField, { SelectOptions } from "./FormSelectField";
 type ACFacultyFieldProps = {
   name: string;
   label: string;
+  required?: boolean;
 };
 
-const ACFacultyField = ({ name, label }: ACFacultyFieldProps) => {
+const ACFacultyField = ({ name, label, required }: ACFacultyFieldProps) => {
   const { data, isLoading } = useAcademicFacultiesQuery({
     limit: 100,
     page: 1,
@@ -20,11 +21,22 @@ const ACFacultyField = ({ name, label }: ACFacultyFieldProps) => {
   });
 
   return (
-    <FormSelectField
-      name={name}
-      label={label}
-      options={acFacultyOptions as SelectOptions[]}
-    />
+    <>
+      {required ? (
+        <span
+          style={{
+            color: "red",
+          }}
+        >
+          *
+        </span>
+      ) : null}
+      <FormSelectField
+        name={name}
+        label={label}
+        options={acFacultyOptions as SelectOptions[]}
+      />
+    </>
   );
 };
 

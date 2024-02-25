@@ -1,5 +1,6 @@
 import { useAcademicDepartmentsQuery } from "@/redux/api/academic/departmentApi";
 import FormSelectField, { SelectOptions } from "./FormSelectField";
+import Loading from "@/app/loading";
 
 type ACDepartmentIDFieldProps = {
   name: string;
@@ -16,9 +17,11 @@ const ACDepartmentIDField = ({
     limit: 100,
     page: 1,
   });
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
   const academicDepartments = data?.academicDepartments;
   const acDepartmentOptions = academicDepartments?.map((acDepartment: any) => {
-    console.log(acDepartment?.id);
     return {
       label: acDepartment?.title,
       value: acDepartment?.id,

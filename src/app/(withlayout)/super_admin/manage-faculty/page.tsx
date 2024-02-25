@@ -42,7 +42,6 @@ const FacultyPage = () => {
 
   const faculties = data?.faculties;
   const meta = data?.meta;
-  console.log(faculties);
 
   const columns = [
     {
@@ -152,7 +151,7 @@ const FacultyPage = () => {
         />
         <div>
           <Link href="/super_admin/manage-faculty/create">
-            <Button type="primary">Create</Button>
+            <Button type="primary">Create Faculty</Button>
           </Link>
           {(!!sortBy || !!sortOrder || !!searchTerm) && (
             <Button

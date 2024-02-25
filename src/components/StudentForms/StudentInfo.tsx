@@ -1,7 +1,7 @@
 "use client";
 import { Col, Row } from "antd";
 import FormInput from "../Forms/FormInput";
-import FormSelectField from "../Forms/FormSelectField";
+import FormSelectField, { SelectOptions } from "../Forms/FormSelectField";
 import UploadImage from "../ui/UploadImage";
 import {
   acDepartmentOptions,
@@ -12,8 +12,11 @@ import {
 import ACDepartmentField from "../Forms/ACDepartmentField";
 import ACFacultyField from "../Forms/ACFacultyField";
 import ACSemesterField from "../Forms/ACSemesterField";
+import { getDefaultStudentPassword } from "@/helpers/config/envConfig";
 
 const StudentInfo = () => {
+  const defaultStudentPass = getDefaultStudentPassword();
+
   return (
     <div
       style={{
@@ -75,22 +78,11 @@ const StudentInfo = () => {
           }}
         >
           <FormInput
+            // defaultValue={defaultStudentPass}
             type="password"
             name="password"
             size="large"
             label="Password"
-          />
-        </Col>
-        <Col
-          className="gutter-row"
-          span={8}
-          style={{
-            marginBottom: "10px",
-          }}
-        >
-          <ACDepartmentField
-            name="student.academicDepartment"
-            label="Academic Department"
           />
         </Col>
         <Col
@@ -105,6 +97,54 @@ const StudentInfo = () => {
             label="Academic Faculty"
           />
         </Col>
+
+        {/* <Col
+          className="gutter-row"
+          span={8}
+          style={{
+            marginBottom: "10px",
+          }}
+        >
+          <ACFacultyIDField
+            onChange={(el) => setAFacultyId(el)}
+            name="student.academicFaculty"
+            label="Academic Faculty"
+          />
+        </Col> */}
+
+        <Col
+          className="gutter-row"
+          span={8}
+          style={{
+            marginBottom: "10px",
+          }}
+        >
+          <ACDepartmentField
+            name="student.academicDepartment"
+            label="Academic Department"
+          />
+        </Col>
+
+        {/* <Col
+          className="gutter-row"
+          span={8}
+          style={{
+            marginBottom: "10px",
+          }}
+        >
+          <FormSelectField
+            options={academicDepartmentsOptions as SelectOptions[]}
+            name="academicDepartmentId"
+            label="Academic Department"
+            disabled={!acFacultyId}
+          />
+          {!acFacultyId && (
+            <small style={{ color: "red" }}>
+              select academic faculty first
+            </small>
+          )}
+        </Col> */}
+
         <Col
           className="gutter-row"
           span={8}

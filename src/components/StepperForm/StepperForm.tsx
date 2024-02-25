@@ -81,15 +81,16 @@ const StepperForm = ({
                 Next
               </Button>
             )}
-            {current === steps.length - 1 && (
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={() => message.success("Processing complete!")}
-              >
-                Done
-              </Button>
-            )}
+            {current === steps.length - 1 &&
+              persistKey !== "student-view-form" && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => message.success("Processing complete!")}
+                >
+                  Done
+                </Button>
+              )}
             {current > 0 && (
               <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
                 Previous

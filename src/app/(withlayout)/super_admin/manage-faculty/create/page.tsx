@@ -11,6 +11,8 @@ import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UploadImage from "@/components/ui/UploadImage";
 import { bloodGroupOptions, genderOptions } from "@/constants/global";
 import { useAddFacultyWithFormDataMutation } from "@/redux/api/facultyApi";
+import { facultySchema } from "@/schemas/faculty";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Col, Row, message } from "antd";
 
 const CreateFacultyPage = () => {
@@ -26,8 +28,11 @@ const CreateFacultyPage = () => {
     formData.append("data", data);
     message.loading("Creating...");
     try {
-      const res = await addFacultyWithFormData(formData);
-      if (!!res) {
+      const res = await addFacultyWithFormData(formData).unwrap();
+      if (!res) {
+        message.error("Failed to create faculty!");
+      }
+      if (res) {
         message.success("Faculty created successfully!");
       }
     } catch (err: any) {
@@ -45,7 +50,7 @@ const CreateFacultyPage = () => {
         ]}
       />
       <h1>Create Faculty</h1>
-      <Form submitHandler={adminOnSubmit}>
+      <Form submitHandler={adminOnSubmit} resolver={yupResolver(facultySchema)}>
         {/* faculty information */}
         <div
           style={{
@@ -64,6 +69,7 @@ const CreateFacultyPage = () => {
                 name="faculty.name.firstName"
                 label="First name"
                 size="large"
+                required
               />
             </Col>
 
@@ -72,6 +78,7 @@ const CreateFacultyPage = () => {
                 name="faculty.name.middleName"
                 label="Middle name"
                 size="large"
+                required
               />
             </Col>
 
@@ -80,6 +87,7 @@ const CreateFacultyPage = () => {
                 name="faculty.name.lastName"
                 label="Last name"
                 size="large"
+                required
               />
             </Col>
 
@@ -104,12 +112,14 @@ const CreateFacultyPage = () => {
               <ACFacultyField
                 name="faculty.academicFaculty"
                 label="Academic Faculty"
+                required
               />
             </Col>
             <Col span={8} style={{ margin: "10px 0" }}>
               <ACDepartmentField
                 name="faculty.academicDepartment"
                 label="Academic Department"
+                required
               />
             </Col>
 
@@ -137,6 +147,7 @@ const CreateFacultyPage = () => {
                 name="faculty.email"
                 label="Email address"
                 size="large"
+                required
               />
             </Col>
 
@@ -145,6 +156,7 @@ const CreateFacultyPage = () => {
                 name="faculty.contactNo"
                 label="Contact no."
                 size="large"
+                required
               />
             </Col>
 
@@ -153,6 +165,7 @@ const CreateFacultyPage = () => {
                 name="faculty.emergencyContactNo"
                 label="Emergency contact no."
                 size="large"
+                required
               />
             </Col>
 
@@ -176,6 +189,7 @@ const CreateFacultyPage = () => {
                 name="faculty.designation"
                 label="Designation"
                 size="large"
+                required
               />
             </Col>
 
@@ -196,7 +210,9 @@ const CreateFacultyPage = () => {
             </Col>
           </Row>
         </div>
-        <Button htmlType="submit">submit</Button>
+        <Button type="primary" htmlType="submit">
+          submit
+        </Button>
       </Form>
     </>
   );

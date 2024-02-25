@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import ACSemesterField from "@/components/Forms/ACSemesterField";
 import Form from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
@@ -18,10 +19,16 @@ import dayjs from "dayjs";
 const EditSemesterRegistration = ({ params }: { params: any }) => {
   const { id } = params;
 
-  const { data, isLoading } = useSemesterRegistrationQuery(id);
-  // console.log(data);
-
   const [updateSemesterRegistration] = useUpdateSemesterRegistrationsMutation();
+
+  const { data, isLoading, isError } = useSemesterRegistrationQuery(id);
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
+  if (isError) {
+    console.log(isError);
+  }
 
   const updateOnSubmit = async (values: any) => {
     const tempObject = { ...values };

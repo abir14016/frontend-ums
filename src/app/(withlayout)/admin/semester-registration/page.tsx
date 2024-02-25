@@ -4,11 +4,12 @@ import {
   EditOutlined,
   ReloadOutlined,
   PlayCircleOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UMTable from "@/components/ui/UMTable";
 
-import { Button, Input, Tooltip, message } from "antd";
+import { Button, Input, Tag, Tooltip, message } from "antd";
 import Link from "next/link";
 import { useState } from "react";
 import ActionBar from "@/components/ui/ActionBar";
@@ -51,14 +52,18 @@ const SemesterRegistrationPage = () => {
 
   const semesterRegistrations = data?.semesterRegistrations;
   const meta = data?.meta;
-  // console.log(semesterRegistrations);
+  console.log(semesterRegistrations);
 
   const handleStartSemester = async (id: string) => {
     try {
       const res = await startNewSemester(id).unwrap();
-      message.success(res);
+      if (res) {
+        console.log(res);
+        console.log(res.message);
+        message.success(res.message);
+      }
     } catch (err: any) {
-      message.error(err?.message);
+      message.error("Semester is already started");
     }
   };
 
@@ -96,6 +101,15 @@ const SemesterRegistrationPage = () => {
     {
       title: "Status",
       dataIndex: "status",
+      render: function (data: any) {
+        return (
+          <>
+            {data && data === "UPCOMING" && <Tag color="yellow">{data}</Tag>}
+            {data && data === "ONGOING" && <Tag color="green">{data}</Tag>}
+            {data && data === "ENDED" && <Tag color="red">{data}</Tag>}
+          </>
+        );
+      },
       sorter: true,
     },
     {
@@ -129,7 +143,7 @@ const SemesterRegistrationPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            {data?.status === "ENDED" && (
+            {data?.status === "ENDED" && !data?.academicSemester?.isCurrent && (
               <Tooltip title="Start Semester" placement="bottom">
                 <Button
                   type="primary"
@@ -139,6 +153,19 @@ const SemesterRegistrationPage = () => {
                   }}
                 >
                   <PlayCircleOutlined />
+                </Button>
+              </Tooltip>
+            )}
+            {data?.status === "ENDED" && data?.academicSemester?.isCurrent && (
+              <Tooltip title="Semester Started" placement="bottom">
+                <Button
+                  disabled
+                  type="primary"
+                  style={{
+                    margin: "0px 5px",
+                  }}
+                >
+                  <CheckCircleOutlined />
                 </Button>
               </Tooltip>
             )}

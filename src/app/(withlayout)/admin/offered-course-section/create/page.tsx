@@ -19,6 +19,10 @@ const CreateOfferedCourseSectionPage = () => {
   const [semesterRegistrationId, setSemesterRegistrationId] =
     useState<string>();
 
+  //   const [offeredCourseTitle, setOfferedCourseTitle] = useState<string>("");
+  // const [sectionTitle, setSectionTitle] = useState<string>("");
+  // const [maxCapacity, setMaxCapacity] = useState<number | undefined>(undefined);
+
   const query: Record<string, any> = {};
 
   if (!!acDepartmentId) {
@@ -27,6 +31,7 @@ const CreateOfferedCourseSectionPage = () => {
   if (!!semesterRegistrationId) {
     query["semesterRegistrationId"] = semesterRegistrationId;
   }
+
   const { data, isLoading } = useOfferedCoursesQuery({
     limit: 10,
     page: 1,
@@ -43,17 +48,21 @@ const CreateOfferedCourseSectionPage = () => {
   });
 
   const onSubmit = async (data: any) => {
+    console.log(data);
     data.maxCapacity = parseInt(data?.maxCapacity);
     // console.log(data);
     message.loading("Creating.....");
     try {
       const res = await addOfferedCourseSection(data).unwrap();
       if (res?.id) {
-        message.success("Offered Course created successfully");
+        message.success("Offered Course created successfully!");
+      }
+      if (!res) {
+        message.error("Failed to create!");
       }
     } catch (err: any) {
       console.error(err.message);
-      message.error(err.message);
+      // message.error(err.message);
     }
   };
   const base = "admin";
@@ -91,7 +100,14 @@ const CreateOfferedCourseSectionPage = () => {
                 options={offeredCoursesOptions as SelectOptions[]}
                 name="offeredCourseId"
                 label="Offered Course"
+                disabled={!acDepartmentId || !semesterRegistrationId}
               />
+              {(!acDepartmentId || !semesterRegistrationId) && (
+                <small style={{ color: "red" }}>
+                  select both semester registration and academic department
+                  first
+                </small>
+              )}
             </div>
             <div style={{ margin: "10px 0px" }}>
               <FormInput label="Section" name="title" />

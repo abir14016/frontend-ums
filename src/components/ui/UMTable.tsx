@@ -3,6 +3,7 @@
 import { Table } from "antd";
 
 type UMTableProps = {
+  key?: string | number;
   loading?: boolean;
   columns: any;
   dataSource: any;

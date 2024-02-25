@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import Form from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
@@ -15,10 +16,12 @@ import { Button, Col, Row, message } from "antd";
 
 const EditAdminPage = ({ params }: any) => {
   const { data: adminData, isLoading: loading } = useAdminQuery(params?.id);
-  //   console.log(adminData);
   const [updateAdmin] = useUpdateAdminMutation();
 
   const { data, isLoading } = useDepartmentsQuery({ limit: 100, page: 1 });
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
   //@ts-ignore
   const departments: IDepartment[] = data?.departments;
 
@@ -34,12 +37,12 @@ const EditAdminPage = ({ params }: any) => {
   const onSubmit = async (values: any) => {
     try {
       const res = await updateAdmin({ id: params?.id, body: values }).unwrap();
-      // console.log(res);
+      console.log(res);
       if (res?.id) {
         message.success("Admin Successfully Updated!");
       }
     } catch (err: any) {
-      console.error(err.message);
+      message.error("Failed to update");
     }
   };
 

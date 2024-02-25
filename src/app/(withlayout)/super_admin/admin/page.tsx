@@ -195,6 +195,7 @@ const AdminPage = () => {
       </ActionBar>
 
       <UMTable
+        key={adminId}
         loading={isLoading}
         columns={columns}
         dataSource={admins}

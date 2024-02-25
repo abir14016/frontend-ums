@@ -14,7 +14,7 @@ const CreateSemesterRegistrationPage = () => {
     data.minCredit = parseInt(data?.minCredit);
     data.maxCredit = parseInt(data?.maxCredit);
 
-    // console.log(data);
+    console.log(data);
     message.loading("Creating.....");
     try {
       const res = await addSemesterRegistrations(data).unwrap();
